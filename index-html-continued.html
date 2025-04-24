@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Well - A sobriety tracker app">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Well">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Well - Sobriety Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <style>
+    body {
+      background-color: #121212;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #4db6ac;
+      font-family: 'Roboto', sans-serif;
+    }
+    
+    .loading-text {
+      margin-top: 24px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top: 5px solid #4db6ac;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  
+  <!-- Service Worker for offline functionality -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading Well...</div>
+  </div>
+
+  <!-- This script installs service_worker.js to provide PWA functionality -->
+  <script>
+    var serviceWorkerVersion = null;
+    var scriptLoaded = false;
+    function loadMainDartJs() {
+      if (scriptLoaded) {
+        return;
+      }
+      scriptLoaded = true;
+      var scriptTag = document.createElement('script');
+      scriptTag.src = 'main.dart.js';
+      scriptTag.type = 'application/javascript';
+      document.body.append(scriptTag);
+    }
+
+    if ('serviceWorker' in navigator) {
+      // Service worker URLs are scoped to the origin
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js')
+          .then(function (reg) {
+            // Registration was successful
+            serviceWorkerVersion = reg.active?.version;
+            loadMainDartJs();
+          });
+      });
+    } else {
+      // Service worker not supported, just load the app
+      window.addEventListener('load', function () {
+        loadMainDartJs();
+      });
+    }
+  </script>
+  
+  <!-- Firebase Core JS SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.9.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.2/firebase-auth.js"></script>
+  
+  <script>
+    // Your web app's Firebase configuration
+    // Replace with your actual Firebase project config
+    var firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID",
+      measurementId: "YOUR_MEASUREMENT_ID"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  
+  <script src="main.dart.js" type="application/javascript"></script>
+</body>
+</html>
